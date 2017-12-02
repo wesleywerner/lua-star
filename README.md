@@ -2,7 +2,7 @@
 
 Easy A* path finding for Lua
 
-[lua star example screenshot](example/lua-star-01.png)
+![lua star example screenshot](example/lua-star-01.png)
 
 # Quick Start
 
@@ -38,7 +38,7 @@ Lua star does not care how your map data is arranged, it simply asks you if the 
 
 `useCache` is optional and defaults to `false` when not given. If you have a map that does not change, caching can give a speed boost.
 
-If at any time you need to clear all cached paths;
+If at any time you need to clear all cached paths:
 
     luastar:clearCached()
 
