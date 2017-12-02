@@ -1,6 +1,6 @@
 # lua-star
 
-Easy A* path finding for Lua
+[![Build Status](https://travis-ci.org/wesleywerner/lua-star.svg?branch=master)](https://travis-ci.org/wesleywerner/lua-star) Easy A* path finding for Lua
 
 ![lua star example screenshot](example/lua-star-01.png)
 
