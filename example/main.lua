@@ -13,18 +13,23 @@ local luastar = require("lua-star")
 
 -- a 2D map where true is open and false is blocked
 local map = { }
-local mapsize = 10
+local mapsize = 25
 local screensize = 500
 local tilesize = screensize / mapsize
 
 -- path start and end
 local path = nil
-local start = { x = 1, y = 10 }
-local goal = { x = 10, y = 1 }
+local start = { x = 1, y = mapsize }
+local goal = { x = mapsize, y = 1 }
 
-function love.load()
+-- remember the tile the mouse is hovered over
+local hoveredTile
 
-    love.window.setMode( screensize, screensize )
+-- fonts
+local largeFont = love.graphics.newFont (30)
+local smallFont = love.graphics.newFont (10)
+
+function randomizeMap ()
 
     -- build an open map
     for x=1, mapsize do
@@ -34,22 +39,49 @@ function love.load()
         end
     end
 
+    -- add random walls
+    math.randomseed (os.clock ())
+    for i = 1, 25 do
+        -- start point
+        local x = math.random (2, mapsize-2)
+        local y = math.random (2, mapsize-2)
+        -- vertical or horizontal
+        if math.random() > .5 then
+            for n = 1, 5 do
+                map[x][math.min (mapsize, y+n)] = false
+            end
+        else
+            for n = 1, 5 do
+                map[math.min (mapsize, x+n)][y] = false
+            end
+        end
+    end
+
     requestPath()
 
 end
 
-function love.keypressed(key)
+function love.load ()
+
+    love.window.setMode (screensize, screensize)
+    randomizeMap()
+
+end
+
+function love.keypressed (key)
 
     if key == "escape" then
         love.event.quit()
+    elseif key == "space" then
+        randomizeMap()
     end
 
 end
 
-function love.draw()
+function love.draw ()
 
     -- draw walls
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(.6, .6, .6)
     for x=1, mapsize do
         for y=1, mapsize do
             local fillstyle = "line"
@@ -58,23 +90,45 @@ function love.draw()
         end
     end
 
-    -- draw start and end
-    love.graphics.print("START", (start.x-1) * tilesize, (start.y-1) * tilesize)
-    love.graphics.print("GOAL", (goal.x-1) * tilesize, (goal.y-1) * tilesize)
-
     -- draw the path
+    love.graphics.setFont (smallFont)
     if path then
         for i, p in ipairs(path) do
-            love.graphics.setColor(0, 128, 0)
+            love.graphics.setColor(0, 1, 0)
             love.graphics.rectangle("fill", (p.x-1)*tilesize, (p.y-1)*tilesize, tilesize, tilesize)
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(0, 0, 0)
             love.graphics.print(i, (p.x-1) * tilesize, (p.y-1) * tilesize)
         end
     end
 
+    -- draw start and end
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.setFont (largeFont)
+    love.graphics.print("*", (start.x-1) * tilesize, (start.y-1) * tilesize)
+    love.graphics.print("*", (goal.x-1) * tilesize, (goal.y-1) * tilesize)
+
 end
 
-function love.mousepressed( x, y, button, istouch )
+function love.mousemoved (x, y, dx, dy, istouch)
+
+    local dx = math.floor(x / tilesize) + 1
+    local dy = math.floor(y / tilesize) + 1
+
+    if hoveredTile then
+        if hoveredTile.dx == dx and hoveredTile.dy == dy then
+            return
+        end
+    end
+
+    hoveredTile = { dx = dx, dy = dy }
+    if love.mouse.isDown (1) then
+        map[dx][dy] = not map[dx][dy]
+        requestPath()
+    end
+
+end
+
+function love.mousepressed (x, y, button, istouch)
 
     local dx = math.floor(x / tilesize) + 1
     local dy = math.floor(y / tilesize) + 1
@@ -83,14 +137,14 @@ function love.mousepressed( x, y, button, istouch )
 
 end
 
-function positionIsOpenFunc(x, y)
+function positionIsOpenFunc (x, y)
 
     -- should return true if the position is open to walk
     return map[x][y]
 
 end
 
-function requestPath()
+function requestPath ()
 
     path = luastar:find(mapsize, mapsize, start, goal, positionIsOpenFunc)
 
