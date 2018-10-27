@@ -29,6 +29,9 @@ local hoveredTile
 local largeFont = love.graphics.newFont (30)
 local smallFont = love.graphics.newFont (10)
 
+-- save a screenshot
+local saveScreenshot = false
+
 function randomizeMap ()
 
     -- build an open map
@@ -41,10 +44,10 @@ function randomizeMap ()
 
     -- add random walls
     math.randomseed (os.clock ())
-    for i = 1, 25 do
+    for i = 1, 45 do
         -- start point
-        local x = math.random (2, mapsize-2)
-        local y = math.random (2, mapsize-2)
+        local x = math.random (1, mapsize-2)
+        local y = math.random (1, mapsize-2)
         -- vertical or horizontal
         if math.random() > .5 then
             for n = 1, 5 do
@@ -58,6 +61,7 @@ function randomizeMap ()
     end
 
     requestPath()
+    --saveScreenshot = true
 
 end
 
@@ -106,6 +110,13 @@ function love.draw ()
     love.graphics.setFont (largeFont)
     love.graphics.print("*", (start.x-1) * tilesize, (start.y-1) * tilesize)
     love.graphics.print("*", (goal.x-1) * tilesize, (goal.y-1) * tilesize)
+
+    if saveScreenshot then
+        saveScreenshot = false
+        local filename = string.format("screenshot-%d.png", os.time())
+        love.graphics.captureScreenshot(filename)
+        print (string.format("written %s", filename))
+    end
 
 end
 

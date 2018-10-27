@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/wesleywerner/lua-star.svg?branch=master)](https://travis-ci.org/wesleywerner/lua-star) Lua-star is a pure Lua A* path-finding library.
 
-![lua star example screenshot](example/lua-star-01.png)
+![lua star example screenshot](example/example.gif)
 
 # Quick Start
 
