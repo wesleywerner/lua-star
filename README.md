@@ -1,6 +1,6 @@
 # lua-star
 
-[![Build Status](https://travis-ci.org/wesleywerner/lua-star.svg?branch=master)](https://travis-ci.org/wesleywerner/lua-star) Easy A* path finding for Lua
+[![Build Status](https://travis-ci.org/wesleywerner/lua-star.svg?branch=master)](https://travis-ci.org/wesleywerner/lua-star) Lua-star is a pure Lua A* path-finding library.
 
 ![lua star example screenshot](example/lua-star-01.png)
 
@@ -59,6 +59,24 @@ These commands are for apt-based systems, please adapt to them as needed.
 Unit testing is done with busted, the `.busted` config already defines everything, so simply run:
 
     busted
+
+# Performance
+
+There is a performance measurement tool in `tests/performance.lua`, it calculates the average time to find a path on a large, random map.
+
+    # copy the lib to tests
+    $ cp ../src/lua-star.lua .
+
+    # measure performance
+    $ lua performance.lua
+    Running with seed 1540584306
+    Building a map of 3000x3000...
+    Precalculating 6000 random start/goal positions...
+    Finding 1000 paths...
+        Done in 16.37 seconds.
+        That is 0.0164 seconds, or 16 milliseconds, per path.
+        The map has 9.0 million locations, with about 65% open space.
+
 
 # Example
 
