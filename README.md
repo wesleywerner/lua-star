@@ -15,7 +15,7 @@ Easy to use, it will make you more attractive and you feel sensual doing so.
         return mymap[x][y] == walkable
     end
 
-    local path = luastar:find(width, height, start, goal, positionIsOpenFunc, useCache)
+    local path = luastar:find(width, height, start, goal, positionIsOpenFunc, useCache, excludeDiagonalMoving)
 
 `path` will be false if no path was found, otherwise it contains a list of points that travel from `start` to `goal`:
 
@@ -41,6 +41,8 @@ Lua star does not care how your map data is arranged, it simply asks you if the 
 If at any time you need to clear all cached paths:
 
     luastar:clearCached()
+
+`excludeDiagonalMoving` also optional value  defaults to `false`. If you want to exclude the possibility of moving diagonally set the value `true`. i.e, by default, diagonal movement is **enabled**
 
 # Requirements
 
