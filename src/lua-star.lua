@@ -91,7 +91,7 @@ local function listItem(list, item)
 end
 
 -- (Internal) Requests adjacent map values around the given node.
-local function getAdjacent(width, height, node, positionIsOpenFunc)
+local function getAdjacent(width, height, node, positionIsOpenFunc, includeDiagonals)
 
     local result = { }
 
@@ -100,12 +100,20 @@ local function getAdjacent(width, height, node, positionIsOpenFunc)
         { x = -1, y = 0 },  -- left
         { x = 0, y = 1 },   -- bottom
         { x = 1, y = 0 },   -- right
-        -- include diagonal movements
-        { x = -1, y = -1 },   -- top left
-        { x = 1, y = -1 },   -- top right
-        { x = -1, y = 1 },   -- bot left
-        { x = 1, y = 1 },   -- bot right
     }
+
+    if includeDiagonals then
+        local diagonalMovements = {
+            { x = -1, y = -1 },   -- top left
+            { x = 1, y = -1 },   -- top right
+            { x = -1, y = 1 },   -- bot left
+            { x = 1, y = 1 },   -- bot right
+        }
+
+        for _, value in ipairs(diagonalMovements) do
+            table.insert(positions, value)
+        end
+    end
 
     for _, point in ipairs(positions) do
         local px = clamp(node.x + point.x, 1, width)
@@ -121,7 +129,7 @@ local function getAdjacent(width, height, node, positionIsOpenFunc)
 end
 
 -- Returns the path from start to goal, or false if no path exists.
-function module:find(width, height, start, goal, positionIsOpenFunc, useCache)
+function module:find(width, height, start, goal, positionIsOpenFunc, useCache, excludeDiagonalMoving)
 
     if useCache then
         local cachedPath = getCached(start, goal)
@@ -153,7 +161,7 @@ function module:find(width, height, start, goal, positionIsOpenFunc, useCache)
 
         if not success then
 
-            local adjacentList = getAdjacent(width, height, current, positionIsOpenFunc)
+            local adjacentList = getAdjacent(width, height, current, positionIsOpenFunc, not excludeDiagonalMoving)
 
             for _, adjacent in ipairs(adjacentList) do
 
