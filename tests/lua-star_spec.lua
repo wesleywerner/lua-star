@@ -67,6 +67,28 @@ describe("Lua star", function()
         { x = 10, y = 10 },
     }
 
+    local simplemapDiagonalSolution = {
+        { x = 1, y = 1 },
+        { x = 1, y = 2 },
+        { x = 1, y = 3 },
+        { x = 1, y = 4 },
+        { x = 1, y = 5 },
+        { x = 1, y = 6 },
+        { x = 1, y = 7 },
+        { x = 1, y = 8 },
+        { x = 1, y = 9 },
+        { x = 2, y = 9 },
+        { x = 3, y = 9 },
+        { x = 4, y = 9 },
+        { x = 5, y = 9 },
+        { x = 6, y = 9 },
+        { x = 7, y = 9 },
+        { x = 8, y = 9 },
+        { x = 9, y = 9 },
+        { x = 9, y = 10 },
+        { x = 10, y = 10 },
+    }
+
     local complexmap = [[
                 0000000000
                 1111111110
@@ -196,6 +218,18 @@ describe("Lua star", function()
 
     end)
 
+    it("find a path on a simple map without diagonam movement", function ()
+
+        local luastar = require("lua-star")
+        local excludeDiagonals = true
+        makemap(simplemap)
+        local path = luastar:find(mapsize, mapsize, start, goal, mapTileIsOpen, false, excludeDiagonals)
+        --printSolution(path)
+        assert.are.equal(19, #path)
+        assert.are.same(simplemapDiagonalSolution, path)
+
+    end)
+
     it("find a path on a complex map", function()
 
         local luastar = require("lua-star")
@@ -212,6 +246,26 @@ describe("Lua star", function()
         local luastar = require("lua-star")
         makemap(unsolvablemap)
         local path = luastar:find(mapsize, mapsize, start, goal, mapTileIsOpen)
+        assert.is_false(path)
+
+    end)
+
+    it("find no diagonal path", function()
+
+        local luastar = require("lua-star")
+        local excludeDiagonals = true
+        makemap(unsolvablemap)
+        local path = luastar:find(mapsize, mapsize, start, goal, mapTileIsOpen, false, excludeDiagonals)
+        assert.is_false(path)
+
+    end)
+
+    it("find no diagonal path on a complex map", function()
+
+        local luastar = require("lua-star")
+        local excludeDiagonals = true
+        makemap(complexmap)
+        local path = luastar:find(mapsize, mapsize, start, goal, mapTileIsOpen, false, excludeDiagonals)
         assert.is_false(path)
 
     end)
